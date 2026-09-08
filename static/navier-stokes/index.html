@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Navier-Stokes</title>
+
+		<!--
+			A joke address, and GitHub Pages will not answer one with a 301, so
+			the redirect is client-side and doubled: the meta refresh does it
+			with scripting off, and location.replace does it a beat sooner and
+			without leaving this page behind in the back button. Whichever wins
+			the race, both go to the same place.
+
+			The post itself lives at /blog/navier-stokes/ and does its own
+			hop, from content/blog/navier-stokes.md through
+			layouts/_default/redirect.html. This file is only the shortcut
+			address, and it is static rather than an `aliases:` entry on the
+			post so that a reader who types it gets one hop to the punchline
+			instead of two.
+
+			noindex because a search result for it would spoil the punchline;
+			tools/overflow.py skips this page for its own reasons, and says so
+			where it does the skipping.
+		-->
+		<meta name="robots" content="noindex">
+		<meta http-equiv="refresh" content="0; url=https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+		<script>
+			location.replace("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+		</script>
+	</head>
+
+	<body>
+		<p>
+			Redirecting to
+			<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">the proof</a>.
+		</p>
+	</body>
+
+</html>

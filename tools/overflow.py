@@ -75,6 +75,7 @@ import http.server
 import json
 import logging
 import os
+import re
 import sys
 import threading
 from concurrent.futures import ProcessPoolExecutor
@@ -116,6 +117,15 @@ DEFAULT_BANDS = ((240, 800, 4), (800, 1600, 8), (1600, 2560, 32))
 # for a screen-and-preference combination no device produces.
 FONT_PASS_PX = 24
 FONT_PASS_MIN_WIDTH = 320
+
+# A redirect stub -- an `aliases:` entry in front matter, or a hand-written
+# one under static/ -- has no layout to measure, and trying to measure it
+# fails the run outright: `_prepare` loads with wait_until="load", the refresh
+# fires before that event, and Playwright raises on the interrupted
+# navigation. Worse, the sweep would then be off fetching whatever the stub
+# points at, which is not this site. They are skipped by what makes them
+# redirects.
+REDIRECT_META = re.compile(rb"""http-equiv\s*=\s*["']?refresh""", re.IGNORECASE)
 
 # Findings whose key matches one of these patterns are expected. Keep the
 # reason honest: an entry here is a promise that the bleed is designed, not a
@@ -346,12 +356,15 @@ def _sweep(spec: str | None) -> list[int]:
 def _pages(root: Path) -> list[str]:
     """Find every rendered page under a built site.
 
+    Redirect stubs are left out; see ``REDIRECT_META`` for why.
+
     :param root: The Hugo output directory.
     :return: Site-root-relative URL paths, ascending.
     """
     return sorted(
         "/" + str(path.parent.relative_to(root)).replace("\\", "/").removeprefix(".")
         for path in root.rglob("index.html")
+        if not REDIRECT_META.search(path.read_bytes())
     )
 
 

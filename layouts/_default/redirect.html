@@ -1,0 +1,59 @@
+{{- /*
+	A page that exists to send the reader somewhere else.
+
+	`redirect` in the front matter is the destination; the page renders as a
+	stub that goes there and nothing else. content/blog/navier-stokes.md is the
+	one user: it wants a card on /blog/ with a summary and a "Read more" link,
+	which means a real page with a real .RelPermalink, and it wants that link
+	to land on YouTube. A rendered redirect is the only shape that is both.
+
+	GitHub Pages serves this site and cannot answer with a 301, so the hop is
+	client-side and doubled: the meta refresh does it with scripting off, and
+	location.replace does it a beat sooner and without leaving this stub behind
+	in the back button. Whichever wins the race, both go to the same place.
+
+	In _default/, and that is load-bearing rather than tidiness -- the note at
+	the top of paracausal.html has the whole story: a template named for a
+	page's `layout` is only found at the layouts root by the lookup Hugo
+	introduced in v0.146, and .github/workflows/deploy.yml pins v0.140.0.
+
+	Standalone rather than a block inside _default/baseof.html, for the plain
+	reason that nothing here is ever painted: a document that only redirects
+	has no use for the site's theme, its fonts, its header or its backdrop, and
+	fetching them would only delay the hop.
+
+	tools/overflow.py leaves pages like this one out of the layout sweep, and
+	says why where it does it -- there is no layout here to measure, and the
+	attempt used to fail the run.
+*/ -}}
+<!doctype html>
+<html lang="{{ site.Language.Lang }}">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		{{- /* Nobody reads this page, but a reader with the tab open for the
+		    half-beat before the hop should see the post's own name on it. */}}
+		<title>{{ .Title }}</title>
+		{{- /* A search result for the stub would spoil the punchline, and there
+		    is nothing on it to index anyway. */}}
+		<meta name="robots" content="noindex">
+		{{ with .Params.redirect }}
+			<meta http-equiv="refresh" content="0; url={{ . }}">
+			{{- /* Hugo escapes this into its JavaScript context, quotes and all,
+			    so the destination arrives as a string literal. */}}
+			<script>
+				location.replace({{ . }});
+			</script>
+		{{ end }}
+	</head>
+
+	<body>
+		{{- /* The fallback for a browser that honours neither, and the page as
+		    a crawler or a text browser sees it. */}}
+		{{ with .Params.redirect }}
+			<p>Redirecting to <a href="{{ . }}">{{ $.Title }}</a>.</p>
+		{{ end }}
+	</body>
+
+</html>
