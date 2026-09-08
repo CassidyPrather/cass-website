@@ -10,6 +10,4 @@ Shared the solution + lean proof last month for a video game project. My blog do
 
 Sucks to be cheated out of the $1,000,000! I didn't even know.
 
-<!--more-->
-
-[Here it is again, in full.](https://www.youtube.com/watch?v=dQw4w9WgXcQ) Judge for yourself.
+[Read more](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
